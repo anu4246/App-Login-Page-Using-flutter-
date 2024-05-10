@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(LoginApp());
+  runApp(MyApp());
 }
 
-class LoginApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'EventHub',
-      color: Colors.purple,
+      title: 'EventUp',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primarySwatch: Colors.purple,
       ),
+      debugShowCheckedModeBanner: false, // Removing the debug banner
       home: LoginPage(),
-    );// MaterialApp
+    );
   }
 }
 
@@ -25,87 +24,238 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  // Login form state variables (replace with actual authentication logic)
+  String _username = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text('Login'),
+        title: Text('EventUp'),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
+      body: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // People icon instead of default event icon
+              Icon(
+                Icons.people,
+                size: 100.0,
+                color: Theme.of(context).primaryColor,
               ),
-            ),
-            SizedBox(height: 20.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
+              SizedBox(height: 20.0),
+              // Login form
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) => setState(() => _username = value),
               ),
-              obscureText: true,),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // Check login credentials here
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-
-                // Example validation, replace with your logic
-                if (username == 'admin' && password == 'password') {
-                  // Navigate to home page if login successful
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                } else {
-                  // Show error message if login fails
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Error'),
-                        content: Text('Invalid username or password.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              child: Text('Login'),
-            ),
-          ],
+              SizedBox(height: 10.0),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+                onChanged: (value) => setState(() => _password = value),
+              ),
+              SizedBox(height: 20.0),
+              TextButton(
+                onPressed: () {
+                  // Implement forgot password logic here
+                },
+                child: Text('Forgot Password?'),
+              ),
+              SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement login logic here (e.g., validate credentials)
+                  if (_username.isNotEmpty && _password.isNotEmpty) {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                  } else {
+                    // Show an error message
+                  }
+                },
+                child: Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('EventUp'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      drawer: Drawer(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.purple.shade900, Colors.purple.shade300],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                child: Text('Menu'),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+              ),
+              ListTile(
+                title: Text('Contact Us'),
+                onTap: () {
+                  // Navigate to contact screen
+                },
+              ),
+              ListTile(
+                title: Text('Log Out'),
+                onTap: () {
+                  // Navigate back to login page
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SingleChildScrollView( // Allow vertical scrolling
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Features
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align widgets at the top
+              children: [
+                // Column for service cards
+                Expanded(
+                  child: Column(
+                    children: [
+                      buildServiceCard(context, 'Catering Services', Icons.food_bank, Colors.orange),
+                      buildServiceCard(context, 'Concert', Icons.music_note, Colors.lightBlue),
+                      buildServiceCard(context, 'Photography', Icons.camera_alt, Colors.pink),
+                    ],
+                  ),
+                ),
+                // Column for additional features (can be added here)
+                Expanded(
+                  child: Column(
+                    children: [
+                      buildServiceCard(context, 'Decoration Services', Icons.format_paint, Colors.green),
+                      buildServiceCard(context, 'Venue Selection', Icons.location_city, Colors.blue),
+                      buildServiceCard(context, 'Transparent Pricing', Icons.attach_money, Colors.purple),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            // Reviews Section
+            buildReview(context, 'Beautiful Venue', 'Amazing venue with great ambiance.', '\$500 per day', 4),
+            buildReview(context, 'Exquisite Decor', 'Stunning decor that made our event memorable.', '\$300 per event', 5),
+            buildReview(context, 'Delicious Catering', 'The food was delicious and the service was impeccable.', '\$1000 per event', 4),
+            buildReview(context, 'Professional Photography', 'Captured precious moments beautifully.', '\$800 per event', 5),
+            buildReview(context, 'Entertaining Concert', 'A concert that kept everyone on their feet.', '\$2000 per event', 4),
+            buildReview(context, 'Affordable Pricing', 'Transparent pricing with no hidden costs.', 'Varies', 5),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildServiceCard(BuildContext context, String serviceName, IconData icon, Color cardColor) {
+    return Card(
+      color: cardColor,
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(serviceName),
+        onTap: () {
+          // Navigate to service details screen based on selection
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ServiceDetails(serviceName)),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildReview(BuildContext context, String title, String description, String price, int rating) {
+    return Padding(
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+          ),
+          SizedBox(height: 10.0),
+          Text(
+            description,
+            style: TextStyle(fontSize: 16.0),
+          ),
+          SizedBox(height: 5.0),
+          Text(
+            'Price: $price',
+            style: TextStyle(fontSize: 16.0),
+          ),
+          SizedBox(height: 5.0),
+          Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber),
+              SizedBox(width: 5.0),
+              Text('$rating stars'),
+            ],
+          ),
+          Divider(), // Add a divider for separation
+        ],
+      ),
+    );
+  }
+}
+
+// This is a placeholder for the ServiceDetails screen
+class ServiceDetails extends StatelessWidget {
+  final String serviceName;
+
+  ServiceDetails(this.serviceName);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(serviceName),
       ),
       body: Center(
-        child: Text('Welcome to Event Management App!'),
+        child: Text('Detailed information about $serviceName'),
       ),
     );
   }
